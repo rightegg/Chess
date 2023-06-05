@@ -42,10 +42,10 @@ public abstract class Piece {
 	}
 
 	public Set<Spot> getLegalMoves() {
-
+		
 	}
 	
-	protected abstract Set<Spot> getPossibleMoves();
+	public abstract Set<Spot> getCover();
 	
 	public Set<Spot> getDiagonalCover() {
 		Set<Spot> returned = new HashSet<Spot>();

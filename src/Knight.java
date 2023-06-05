@@ -7,7 +7,7 @@ public class Knight extends Piece {
         super(isWhite, position, b);
     }
 
-    public Set<Spot> getPossibleMoves() {
+    public Set<Spot> getCover() {
         Set<Spot> returned = new HashSet<Spot>();
         Spot[][] b = board.getBoard();
         int thisX = this.getPos().getX();

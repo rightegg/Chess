@@ -9,7 +9,7 @@ public class Rook extends Piece {
 	}
 	
 	@Override
-	public Set<Spot> getPossibleMoves() {
+	public Set<Spot> getCover() {
 		return super.getLineCover();
 	}
 

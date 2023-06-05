@@ -27,38 +27,32 @@ public class Pawn extends Piece {
 		return returned;
 	}
 	
-	public Set<Spot> getCaptureMoves() {
+	public Set<Spot> getCover() {
 		Set<Spot> returned = new HashSet<Spot>();
 		if (this.isWhite()) {
 			try {
-				returned.add(board.getBoard()[this.getPos().getX() + 1][this.getPos().getY()-1]);
-			}
-			catch (ArrayIndexOutOfBoundsException e) {
-				
+				returned.add(board.getBoard()[this.getPos().getX() + 1][this.getPos().getY() - 1]);
+			} catch (ArrayIndexOutOfBoundsException e) {
+
 			}
 			try {
-				returned.add(board.getBoard()[this.getPos().getX() - 1][this.getPos().getY()-1]);
+				returned.add(board.getBoard()[this.getPos().getX() - 1][this.getPos().getY() - 1]);
+			} catch (ArrayIndexOutOfBoundsException e) {
+
 			}
-			catch (ArrayIndexOutOfBoundsException e) {
-				
+		} else {
+			try {
+				returned.add(board.getBoard()[this.getPos().getX() + 1][this.getPos().getY() + 1]);
+			} catch (ArrayIndexOutOfBoundsException e) {
+
+			}
+			try {
+				returned.add(board.getBoard()[this.getPos().getX() - 1][this.getPos().getY() + 1]);
+			} catch (ArrayIndexOutOfBoundsException e) {
+
 			}
 		}
-		else {
-			try {
-				returned.add(board.getBoard()[this.getPos().getX() + 1][this.getPos().getY()+1]);
-			}
-			catch (ArrayIndexOutOfBoundsException e) {
-				
-			}
-			try {
-				returned.add(board.getBoard()[this.getPos().getX() - 1][this.getPos().getY()+1]);
-			}
-			catch (ArrayIndexOutOfBoundsException e) {
-				
-			}
-		}
-		
+
+		return returned;
 	}
-	
-	return returned;
 }

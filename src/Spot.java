@@ -6,8 +6,10 @@ public class Spot {
 	private int x;
 	private int y;
 	
-	public Spot(Board b) {
+	public Spot(Board b, int x, int y) {
 		board = b;
+		this.x = x;
+		this.y = y;
 		isOccupied = false;
 	}
 	

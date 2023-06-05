@@ -23,7 +23,7 @@ public class King extends Piece {
 			}
 		}
 		//castling
-		else if (!hasMoved && this.getPossibleMoves().contains(dest) && Math.abs(dest.getX() - this.getPos().getX()) == 2) {
+		else if (!hasMoved && this.getCover().contains(dest) && Math.abs(dest.getX() - this.getPos().getX()) == 2) {
 			if (dest.getX() > this.getPos().getX()) {
 				dest.setPiece(this);
 				this.getPos().removePiece();
@@ -46,7 +46,7 @@ public class King extends Piece {
 	}
 
 	@Override
-	public Set<Spot> getPossibleMoves() {
+	public Set<Spot> getCover() {
 		Set<Spot> returned = new HashSet<Spot>();
 		
 		Board b = board;

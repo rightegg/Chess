@@ -7,7 +7,7 @@ public class Bishop extends Piece {
 	}
 	
 	@Override
-	public Set<Spot> getPossibleMoves() {
+	public Set<Spot> getCover() {
 		return super.getDiagonalCover();
 	}
 

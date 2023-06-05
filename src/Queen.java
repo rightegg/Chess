@@ -8,7 +8,7 @@ public class Queen extends Piece {
 	}
 
 	@Override
-	public Set<Spot> getLegalMoves() {
+	public Set<Spot> getCover() {
 		Set<Spot> returned = new HashSet<Spot>();
 		for (Spot s : super.getDiagonalCover()) {
 			returned.add(s);
