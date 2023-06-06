@@ -1,3 +1,5 @@
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.*;
 
 public abstract class Piece {
@@ -5,12 +7,27 @@ public abstract class Piece {
 	private Set<Spot> legalMoves;
 	private Spot position;
 	protected Board board;
-	
+	private final CheckHandler chd;
+	protected Image img;
+
 	public Piece(boolean isWhite, Spot position, Board board) {
+		img = null;
 		this.isWhite = isWhite;
 		this.position = position;
 		this.board = board;
 		legalMoves = new HashSet<Spot>();
+		this.chd = board.getChd();
+	}
+
+	public void resize() {
+		img = img.getScaledInstance(100, 100, Image.SCALE_DEFAULT);
+	}
+
+	public void draw(Graphics g) {
+		int x = this.getPos().getX();
+		int y = this.getPos().getY();
+
+		g.drawImage(img, x, y, null);
 	}
 	
 	public boolean move(Spot dest) {
@@ -42,7 +59,7 @@ public abstract class Piece {
 	}
 
 	public Set<Spot> getLegalMoves() {
-		
+		return chd.getLegalMoves(this);
 	}
 	
 	public abstract Set<Spot> getCover();

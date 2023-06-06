@@ -1,3 +1,6 @@
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -5,6 +8,14 @@ public class Queen extends Piece {
 
 	public Queen(boolean isWhite, Spot position, Board board) {
 		super(isWhite, position, board);
+
+		try {
+			img = isWhite ? ImageIO.read(getClass().getResource("./images/wq.png")) : ImageIO.read(getClass().getResource("./images/bq.png"));
+			resize();
+		}
+		catch (Exception e) {
+
+		}
 	}
 
 	@Override

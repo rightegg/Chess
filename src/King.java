@@ -1,3 +1,6 @@
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -8,6 +11,14 @@ public class King extends Piece {
 	public King(boolean isWhite, Spot position, Board board) {
 		super(isWhite, position, board);
 		hasMoved = false;
+
+		try {
+			img = isWhite ? ImageIO.read(getClass().getResource("./images/wk.png")) : ImageIO.read(getClass().getResource("./images/bk.png"));
+			resize();
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 	
 	@Override
@@ -45,8 +56,7 @@ public class King extends Piece {
 		return false;
 	}
 
-	@Override
-	public Set<Spot> getCover() {
+	public Set<Spot> getMoves() {
 		Set<Spot> returned = new HashSet<Spot>();
 		
 		Board b = board;
@@ -111,13 +121,44 @@ public class King extends Piece {
 			int checkedX = (int) (x + Math.cos(i) * 1.75);
 			int checkedY = (int) (y + Math.sin(i) * 1.75);
 			try {
-				returned.add(b.getBoard()[checkedX][checkedY]);
+				if (this.isWhite()) {
+					if (b.getBCover().get(b.getBoard()[checkedX][checkedY]).isEmpty()) {
+						returned.add(b.getBoard()[checkedX][checkedY]);
+					}
+				}
+				else {
+					if (b.getWCover().get(b.getBoard()[checkedX][checkedY]).isEmpty()) {
+						returned.add(b.getBoard()[checkedX][checkedY]);
+					}
+				}
 			}
 			catch (ArrayIndexOutOfBoundsException e) {
 				continue;
 			}
 		}
 		
+		return returned;
+	}
+
+	@Override
+	public Set<Spot> getCover() {
+		Set<Spot> returned = new HashSet<Spot>();
+
+		Spot s = this.getPos();
+		int x = s.getX();
+		int y = s.getY();
+
+		for (double i = 0; i < 2 * Math.PI; i += Math.PI/4) {
+			int checkedX = (int) (x + Math.cos(i) * 1.75);
+			int checkedY = (int) (y + Math.sin(i) * 1.75);
+			try {
+				returned.add(board.getBoard()[checkedX][checkedY]);
+			}
+			catch (ArrayIndexOutOfBoundsException e) {
+				continue;
+			}
+		}
+
 		return returned;
 	}
 

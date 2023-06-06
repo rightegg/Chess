@@ -1,3 +1,6 @@
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Set;
 
 public class Rook extends Piece {
@@ -6,6 +9,14 @@ public class Rook extends Piece {
 	public Rook(boolean isWhite, Spot position, Board board) {
 		super(isWhite, position, board);
 		hasMoved = false;
+
+		try {
+			img = isWhite ? ImageIO.read(getClass().getResource("./images/wr.png")) : ImageIO.read(getClass().getResource("./images/br.png"));
+			resize();
+		}
+		catch (Exception e) {
+
+		}
 	}
 	
 	@Override
