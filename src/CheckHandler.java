@@ -14,21 +14,31 @@ public class CheckHandler {
         this.board = board;
     }
 
+    public void setKings(King BKing, King WKing) {
+        this.BKing = BKing;
+        this.WKing = WKing;
+    }
+
     public Set<Spot> getLegalMoves(Piece p) {
         Set<Spot> returned;
+        Set<Spot> possibleMoves;
 
         if (p instanceof Pawn) {
-            returned = ((Pawn) p).getMoves();
+            possibleMoves = ((Pawn) p).getMoves();
         }
         else if (p instanceof King) {
-            returned = ((King) p).getMoves();
+            possibleMoves = ((King) p).getMoves();
         }
         else {
-            returned = p.getCover();
+            possibleMoves = p.getCover();
         }
 
-        for (Spot s : returned) {
-            if (!testMoveLegal(p, s)) {
+        returned = new HashSet<Spot>(possibleMoves);
+
+        for (Spot s : possibleMoves) {
+            System.out.println("test" + s.getX() + ", " + s.getY());
+
+            if ((s.isOccupied() && s.getPiece().isWhite() == p.isWhite()) || !testMoveLegal(p, s)) {
                 returned.remove(s);
             }
         }
@@ -46,12 +56,17 @@ public class CheckHandler {
 
     private boolean testMoveLegal(Piece p, Spot dest) {
         Spot oldpos = p.getPos();
+
         boolean isWhite = p.isWhite();
         boolean legal = false;
 
+        if (dest.isOccupied() && dest.getPiece().isWhite() == p.isWhite()) {
+            return false;
+        }
+
         if (dest.isOccupied()) {
             Piece oldp = dest.getPiece();
-            p.move(dest);
+            p.moveNoCheck(dest);
             board.updateCover();
 
             legal = isWhite ? !isWhiteChecked() : !isBlackChecked();
@@ -61,13 +76,24 @@ public class CheckHandler {
             dest.setPiece(oldp);
         }
         else {
-            p.move(dest);
-            board.updateCover();
+            System.out.println(oldpos.getX() + ", " + oldpos.getY());
+            if (p.moveNoCheck(dest)) {
+                board.updateCover();
 
-            legal = isWhite ? !isWhiteChecked() : !isBlackChecked();
+                legal = isWhite ? !isWhiteChecked() : !isBlackChecked();
 
-            dest.removePiece();
-            oldpos.setPiece(p);
+                dest.removePiece();
+                System.out.println(oldpos.getX() + ", " + oldpos.getY());
+                System.out.println(oldpos.isOccupied());
+                oldpos.setPiece(p);
+                p.setPos(oldpos);
+                System.out.println(oldpos.isOccupied());
+            }
+
+            else {
+                return false;
+            }
+
         }
 
         return legal;

@@ -116,10 +116,31 @@ public class King extends Piece {
 		Spot s = this.getPos();
 		int x = s.getX();
 		int y = s.getY();
-		
-		for (double i = 0; i < 2 * Math.PI; i += Math.PI/4) {
-			int checkedX = (int) (x + Math.cos(i) * 1.75);
-			int checkedY = (int) (y + Math.sin(i) * 1.75);
+
+		for (double i = 0; i < 2 * Math.PI; i += Math.PI/2) {
+			int checkedX = (int) (x + Math.cos(i));
+			int checkedY = (int) (y + Math.sin(i));
+
+			try {
+				if (this.isWhite()) {
+					if (b.getBCover().get(b.getBoard()[checkedX][checkedY]).isEmpty()) {
+						returned.add(b.getBoard()[checkedX][checkedY]);
+					}
+				}
+				else {
+					if (b.getWCover().get(b.getBoard()[checkedX][checkedY]).isEmpty()) {
+						returned.add(b.getBoard()[checkedX][checkedY]);
+					}
+				}
+			}
+			catch (ArrayIndexOutOfBoundsException e) {
+				continue;
+			}
+		}
+		for (double i = Math.PI/4; i < 2 * Math.PI; i += Math.PI/2) {
+			int checkedX = (int) (x + Math.cos(i)*2/Math.sqrt(2));
+			int checkedY = (int) (y + Math.sin(i)*2/Math.sqrt(2));
+
 			try {
 				if (this.isWhite()) {
 					if (b.getBCover().get(b.getBoard()[checkedX][checkedY]).isEmpty()) {

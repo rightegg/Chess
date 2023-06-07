@@ -18,7 +18,6 @@ public class Board extends JPanel implements MouseListener {
 	private Spot lastMove2;
 	private int curX;
 	private int curY;
-	private Piece curPiece;
 	public final int SPOT_SIZE = 50;
 	
 	/* R N B Q K B N R <-- black (7, 0)
@@ -35,7 +34,6 @@ public class Board extends JPanel implements MouseListener {
 		curSpot = null;
 		curX = 0;
 		curY = 0;
-		curPiece = null;
 		lastMove1 = null;
 		lastMove2 = null;
 		board = new Spot[8][8];
@@ -44,7 +42,8 @@ public class Board extends JPanel implements MouseListener {
 		BCover = new HashMap<Spot, List<Piece>>();
 		WCover = new HashMap<Spot, List<Piece>>();
 		whiteTurn = true;
-		
+		chd = new CheckHandler(null, null, this);
+
 		setLayout(new GridLayout(8,8,0,0));
 
 
@@ -117,7 +116,22 @@ public class Board extends JPanel implements MouseListener {
 			}
 		}
 
-		chd = new CheckHandler(BKing, WKing, this);
+		chd.setKings(BKing, WKing);
+		updateCover();
+		initializePieces();
+	}
+
+	private void initializePieces() {
+		for (int i = 0; i < 7; i++) {
+			for (int j = 0; j < 2; j++) {
+				board[i][j].getPiece().initialize();
+			}
+		}
+		for (int i = 0; i < 7; i++) {
+			for (int j = 6; j < 8; j++) {
+				board[i][j].getPiece().initialize();
+			}
+		}
 	}
 
 	@Override
@@ -133,7 +147,7 @@ public class Board extends JPanel implements MouseListener {
 	}
 
 	public CheckHandler getChd() {
-		return chd;
+		return this.chd;
 	}
 	
 	public void removePiece(Piece p, Spot s) {
@@ -188,14 +202,31 @@ public class Board extends JPanel implements MouseListener {
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		curX = e.getX();
-		curY = e.getY();
-		Spot clickedSpot = (Spot) this.getComponentAt(e.getX(), e.getY());
+		curX = e.getY();
+		curY = e.getX();
+		Spot clickedSpot = (Spot) this.getComponentAt(curX, curY);
 
-		if (curSpot == null || !curSpot.isOccupied()) {
+		if (clickedSpot.isOccupied()) {
+			System.out.println(clickedSpot.getPiece().getClass().getSimpleName());
+			for (Spot s : clickedSpot.getPiece().getCover()) {
+				System.out.println(" ahhh " + s.getX() + ", " + s.getY());
+			}
+		}
+
+		if (clickedSpot == null) {
+			curSpot.setCur(false);
+		}
+		else if (curSpot == null) {
 			curSpot = clickedSpot;
-			if (curSpot.isOccupied()) {
-				curPiece = curSpot.getPiece();
+			curSpot.setCur(true);
+		}
+		else if (clickedSpot.isOccupied() && clickedSpot.getPiece().isWhite() == curSpot.getPiece().isWhite()) {
+			curSpot.setCur(false);
+			curSpot = clickedSpot;
+			curSpot.setCur(true);
+			curSpot.getPiece().updateLegalMoves();
+			for (Spot s : curSpot.getPiece().getLegalMoves()) {
+				s.setPossibleMove(true);
 			}
 		}
 		else if (curSpot != clickedSpot) {
@@ -214,17 +245,18 @@ public class Board extends JPanel implements MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		Spot releasedSpot = (Spot) this.getComponentAt(e.getX(), e.getY());
+		curX = e.getY();
+		curY = e.getX();
+		Spot releasedSpot = (Spot) this.getComponentAt(curX, curY);
 
 		if (releasedSpot == curSpot) {
 			return;
 		}
 
-		if (curSpot != null && curSpot.isOccupied()) {
-			if (curSpot.getPiece().isWhite() && whiteTurn || !curSpot.getPiece().isWhite() && !whiteTurn) {
-				if (curSpot.getPiece().getLegalMoves().contains(releasedSpot)) {
+		if (curSpot.isOccupied()) {
+			if (curSpot.getPiece().isWhite() == whiteTurn) {
+				if (curSpot.getPiece().getLegalMoves().contains(releasedSpot)); {
 					curSpot.getPiece().move(releasedSpot);
-					curSpot = null;
 				}
 			}
 		}

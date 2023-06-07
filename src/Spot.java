@@ -9,6 +9,7 @@ public class Spot extends JComponent {
 	private final int y;
 	private final Color color;
 	private boolean possibleMove;
+	private boolean isCur;
 
 	public Spot(Board b, int x, int y, boolean isWhite) {
 		possibleMove = false;
@@ -28,8 +29,24 @@ public class Spot extends JComponent {
 		possibleMove = canMove;
 	}
 
+	public void setCur(boolean isCur) {
+		this.isCur = isCur;
+	}
+
 	public void paintComponent(Graphics g) {
-		g.setColor(color);
+		if (isCur) {
+			g.setColor(new Color(152,180,172));
+		}
+		else {
+			g.setColor(color);
+		}
+
+		g.setColor(new Color(169, 169, 169, 125));
+
+		if (possibleMove) {
+			System.out.println("canmove");
+			g.fillOval(this.getX(), this.getY(), 10,10);
+		}
 
 		g.fillRect(this.getX()*this.getWidth(), this.getY()*this.getHeight(), this.getWidth(), this.getHeight());
 
@@ -37,6 +54,9 @@ public class Spot extends JComponent {
 			//piece.img = piece.img.getScaledInstance(100, 100, Image.SCALE_DEFAULT);
 			g.drawImage(piece.img, this.getX()*this.getWidth(), this.getY()*this.getHeight(), null);
 		}
+
+		g.setColor(new Color(169, 169, 169, 125));
+
 	}
 	
 	public boolean capture(Piece p) {
@@ -65,6 +85,7 @@ public class Spot extends JComponent {
 		}
 		
 		piece = p;
+		p.setPos(this);
 		isOccupied = true;
 	}
 	

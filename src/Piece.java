@@ -29,21 +29,51 @@ public abstract class Piece {
 
 		g.drawImage(img, x, y, null);
 	}
+
+	public void initialize() {
+		updateLegalMoves();
+	}
 	
 	public boolean move(Spot dest) {
 		if (!legalMoves.contains(dest)) {
+			System.out.println("gege");
 			return false;
 		}
 		
 		if (dest.isOccupied()) {
-			return dest.capture(this);
+			if (dest.capture(this)) {
+				position.removePiece();
+				position = dest;
+				return true;
+			}
 		}
-		
+
+		position.removePiece();
 		position = dest;
 		dest.setPiece(this);
-		updateLegalMoves();
 		
 		return true;		
+	}
+
+	public boolean moveNoCheck(Spot dest) {
+		if (!this.getCover().contains(dest)) {
+			System.out.println("gege");
+			return false;
+		}
+
+		if (dest.isOccupied()) {
+			if (dest.capture(this)) {
+				position.removePiece();
+				position = dest;
+				return true;
+			}
+		}
+
+		position.removePiece();
+		position = dest;
+		dest.setPiece(this);
+
+		return true;
 	}
 	
 	public Spot getPos() {
