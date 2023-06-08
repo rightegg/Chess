@@ -248,13 +248,11 @@ public class Board extends JPanel implements MouseListener {
 						whiteTurn = !whiteTurn;
 						if (clickedSpot.getPiece() instanceof Pawn) {
 							if (Math.abs(prevY - clickedSpot.getY()) == 2) {
-								System.out.println("hi");
 								try {
 									Spot leftSpot = board[clickedSpot.getX()-1][clickedSpot.getY()];
 
 									if (leftSpot.isOccupied() && leftSpot.getPiece() instanceof Pawn && leftSpot.getPiece().isWhite() != clickedSpot.getPiece().isWhite()) {
 										((Pawn) leftSpot.getPiece()).setCanPassantRight(true);
-										System.out.println("bro");
 									}
 
 									board[clickedSpot.getX()][clickedSpot.getPiece().isWhite() ? clickedSpot.getY()+1 : clickedSpot.getY()-1].setPassantSpot(true);
@@ -286,7 +284,6 @@ public class Board extends JPanel implements MouseListener {
 			}
 
 			if (clickedSpot.isOccupied()) {
-				System.out.println(clickedSpot.getPiece().getClass().getSimpleName());
 				if (clickedSpot.getPiece().isWhite() == whiteTurn) {
 					setPosMoves(clickedSpot);
 				}

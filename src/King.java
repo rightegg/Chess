@@ -27,7 +27,6 @@ public class King extends Piece {
 		if (Math.abs(dest.getX() - this.getPos().getX()) <= 1 && Math.abs(dest.getY() - this.getPos().getY()) <= 1) {
 			if (super.move(dest)) {
 				hasMoved = true;
-				System.out.println("hahiaowheaiow");
 				return true;
 			}
 			else {
@@ -36,7 +35,6 @@ public class King extends Piece {
 		}
 		//castling
 		else if (!hasMoved && this.getLegalMoves().contains(dest) && Math.abs(dest.getX() - this.getPos().getX()) == 2) {
-			System.out.println("castling");
 			if (dest.getX() > this.getPos().getX()) {
 				this.getPos().removePiece();
 				dest.setPiece(this);

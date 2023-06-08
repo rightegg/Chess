@@ -36,7 +36,6 @@ public abstract class Piece {
 	
 	public boolean move(Spot dest) {
 		if (!legalMoves.contains(dest)) {
-			System.out.println("awman");
 			return false;
 		}
 		

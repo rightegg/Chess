@@ -61,8 +61,6 @@ public class CheckHandler {
                 throw new IllegalArgumentException();
             }
 
-            System.out.println("oldpos occ: " + oldpos.isOccupied());
-            System.out.println("oldpos pos: " + oldpos.getX() + ", " + oldpos.getY());
             board.updateCover();
 
             legal = isWhite ? !isWhiteChecked() : !isBlackChecked();
