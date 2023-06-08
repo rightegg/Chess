@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Area;
+import java.awt.geom.Ellipse2D;
 
 public class Spot extends JComponent {
 	private final Board board;
@@ -10,6 +12,7 @@ public class Spot extends JComponent {
 	private final Color color;
 	private boolean possibleMove;
 	private boolean isCur;
+	private boolean passantSpot;
 
 	public Spot(Board b, int x, int y, boolean isWhite) {
 		possibleMove = false;
@@ -41,22 +44,37 @@ public class Spot extends JComponent {
 			g.setColor(color);
 		}
 
-		g.setColor(new Color(169, 169, 169, 125));
+		g.fillRect(this.getX()*this.getWidth(), this.getY()*this.getHeight(), this.getWidth(), this.getHeight());
 
 		if (possibleMove) {
-			System.out.println("canmove");
-			g.fillOval(this.getX(), this.getY(), 10,10);
+			if (isOccupied() || passantSpot) {
+				g.setColor(new Color(169, 169, 169, 175));
+				Graphics2D g2d = (Graphics2D)g;
+				Shape ring = createRingShape(this.getX()*this.getWidth()+50, this.getY()*this.getHeight()+50, 50, 10);
+				g2d.fill(ring);
+				g2d.draw(ring);
+			}
+			else {
+				g.setColor(new Color(169, 169, 169, 255));
+				g.fillOval(this.getX()*this.getWidth()+this.getWidth()/2-12, this.getY()*this.getHeight()+this.getHeight()/2- 12, 25,25);
+			}
 		}
 
-		g.fillRect(this.getX()*this.getWidth(), this.getY()*this.getHeight(), this.getWidth(), this.getHeight());
 
 		if (isOccupied) {
 			//piece.img = piece.img.getScaledInstance(100, 100, Image.SCALE_DEFAULT);
 			g.drawImage(piece.img, this.getX()*this.getWidth(), this.getY()*this.getHeight(), null);
 		}
+	}
 
-		g.setColor(new Color(169, 169, 169, 125));
-
+	private static Shape createRingShape(
+			double x, double y, double r, double thickness)
+	{
+		Ellipse2D outer = new Ellipse2D.Double(x - r,y - r,2*r,2*r);
+		Ellipse2D inner = new Ellipse2D.Double(x - r + thickness,y - r + thickness,2*r - 2*thickness,2*r - 2*thickness);
+		Area area = new Area(outer);
+		area.subtract(new Area(inner));
+		return area;
 	}
 	
 	public boolean capture(Piece p) {
@@ -67,7 +85,15 @@ public class Spot extends JComponent {
 		if (p.isWhite() != piece.isWhite()) {
 			board.removePiece(piece, this);
 			removePiece();
+			p.getPos().removePiece();
 			setPiece(p);
+
+			if (piece.isWhite()) {
+				board.getWPieces().remove(piece);
+			}
+			else {
+				board.getBPieces().remove(piece);
+			}
 			
 			return true;
 		}
@@ -87,6 +113,10 @@ public class Spot extends JComponent {
 		piece = p;
 		p.setPos(this);
 		isOccupied = true;
+	}
+
+	public void setPassantSpot(boolean v) {
+		passantSpot = v;
 	}
 	
 	public void removePiece() {

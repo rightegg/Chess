@@ -36,7 +36,6 @@ public class CheckHandler {
         returned = new HashSet<Spot>(possibleMoves);
 
         for (Spot s : possibleMoves) {
-            System.out.println("test" + s.getX() + ", " + s.getY());
 
             if ((s.isOccupied() && s.getPiece().isWhite() == p.isWhite()) || !testMoveLegal(p, s)) {
                 returned.remove(s);
@@ -44,14 +43,6 @@ public class CheckHandler {
         }
 
         return returned;
-    }
-
-    public boolean isWhiteChecked() {
-        return board.getBCover().get(WKing.getPos()).size() > 0;
-    }
-
-    public boolean isBlackChecked() {
-        return board.getWCover().get(BKing.getPos()).size() > 0;
     }
 
     private boolean testMoveLegal(Piece p, Spot dest) {
@@ -66,7 +57,12 @@ public class CheckHandler {
 
         if (dest.isOccupied()) {
             Piece oldp = dest.getPiece();
-            p.moveNoCheck(dest);
+            if (!p.moveNoCheck(dest)) {
+                throw new IllegalArgumentException();
+            }
+
+            System.out.println("oldpos occ: " + oldpos.isOccupied());
+            System.out.println("oldpos pos: " + oldpos.getX() + ", " + oldpos.getY());
             board.updateCover();
 
             legal = isWhite ? !isWhiteChecked() : !isBlackChecked();
@@ -74,20 +70,22 @@ public class CheckHandler {
             oldpos.setPiece(p);
             dest.removePiece();
             dest.setPiece(oldp);
+            if (oldp.isWhite()) {
+                board.getWPieces().add(oldp);
+            }
+            else {
+                board.getBPieces().add(oldp);
+            }
         }
         else {
-            System.out.println(oldpos.getX() + ", " + oldpos.getY());
             if (p.moveNoCheck(dest)) {
                 board.updateCover();
 
                 legal = isWhite ? !isWhiteChecked() : !isBlackChecked();
 
                 dest.removePiece();
-                System.out.println(oldpos.getX() + ", " + oldpos.getY());
-                System.out.println(oldpos.isOccupied());
                 oldpos.setPiece(p);
                 p.setPos(oldpos);
-                System.out.println(oldpos.isOccupied());
             }
 
             else {
@@ -233,5 +231,13 @@ public class CheckHandler {
         }
 
         return true;
+    }
+
+    public boolean isWhiteChecked() {
+        return board.getBCover().get(WKing.getPos()).size() > 0;
+    }
+
+    public boolean isBlackChecked() {
+        return board.getWCover().get(BKing.getPos()).size() > 0;
     }
 }

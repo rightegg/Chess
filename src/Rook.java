@@ -44,14 +44,12 @@ public class Rook extends Piece {
 		
 		else {
 			if (this.getPos().getX() == 7) {
-				board.getBoard()[this.getPos().getX() -2][this.getPos().getY()].setPiece(this);
 				this.getPos().removePiece();
-				this.setPos(board.getBoard()[this.getPos().getX() -2][this.getPos().getY()]);
+				board.getBoard()[this.getPos().getX() -2][this.getPos().getY()].setPiece(this);
 			}
 			else if (this.getPos().getX() == 0) {
-				board.getBoard()[this.getPos().getX() +3][this.getPos().getY()].setPiece(this);
 				this.getPos().removePiece();
-				this.setPos(board.getBoard()[this.getPos().getX() +3][this.getPos().getY()]);
+				board.getBoard()[this.getPos().getX() +3][this.getPos().getY()].setPiece(this);
 			}
 		}
 	}

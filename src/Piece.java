@@ -36,16 +36,12 @@ public abstract class Piece {
 	
 	public boolean move(Spot dest) {
 		if (!legalMoves.contains(dest)) {
-			System.out.println("gege");
+			System.out.println("awman");
 			return false;
 		}
 		
 		if (dest.isOccupied()) {
-			if (dest.capture(this)) {
-				position.removePiece();
-				position = dest;
-				return true;
-			}
+			return dest.capture(this);
 		}
 
 		position.removePiece();
@@ -56,17 +52,22 @@ public abstract class Piece {
 	}
 
 	public boolean moveNoCheck(Spot dest) {
-		if (!this.getCover().contains(dest)) {
-			System.out.println("gege");
+		if (this instanceof Pawn) {
+			if (!((Pawn)this).getMoves().contains(dest)) {
+				return false;
+			}
+		}
+		else if (this instanceof King) {
+			if (!((King)this).getMoves().contains(dest)) {
+				return false;
+			}
+		}
+		else if (!this.getCover().contains(dest)) {
 			return false;
 		}
 
 		if (dest.isOccupied()) {
-			if (dest.capture(this)) {
-				position.removePiece();
-				position = dest;
-				return true;
-			}
+			return dest.capture(this);
 		}
 
 		position.removePiece();

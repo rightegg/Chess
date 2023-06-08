@@ -206,41 +206,141 @@ public class Board extends JPanel implements MouseListener {
 		curY = e.getX();
 		Spot clickedSpot = (Spot) this.getComponentAt(curX, curY);
 
-		if (clickedSpot.isOccupied()) {
-			System.out.println(clickedSpot.getPiece().getClass().getSimpleName());
-			for (Spot s : clickedSpot.getPiece().getCover()) {
-				System.out.println(" ahhh " + s.getX() + ", " + s.getY());
-			}
-		}
+
 
 		if (clickedSpot == null) {
 			curSpot.setCur(false);
+			return;
 		}
-		else if (curSpot == null) {
-			curSpot = clickedSpot;
-			curSpot.setCur(true);
+
+		if (curSpot == clickedSpot) {
+			return;
 		}
-		else if (clickedSpot.isOccupied() && clickedSpot.getPiece().isWhite() == curSpot.getPiece().isWhite()) {
-			curSpot.setCur(false);
+
+		if (curSpot == null) {
 			curSpot = clickedSpot;
 			curSpot.setCur(true);
 			curSpot.getPiece().updateLegalMoves();
-			for (Spot s : curSpot.getPiece().getLegalMoves()) {
-				s.setPossibleMove(true);
-			}
+			setPosMoves(curSpot);
 		}
-		else if (curSpot != clickedSpot) {
-			if (curSpot.getPiece().isWhite() && whiteTurn || !curSpot.getPiece().isWhite() && !whiteTurn) {
-				if (curSpot.getPiece().getLegalMoves().contains(clickedSpot)) {
-					curSpot.getPiece().move(clickedSpot);
-					lastMove1 = curSpot;
-					lastMove2 = clickedSpot;
-					curSpot = null;
+		else {
+			if (curSpot.isOccupied()) {
+				cleanPosMoves();
+
+				if (curSpot.getPiece().isWhite() == whiteTurn) {
+					curSpot.getPiece().updateLegalMoves();
+					if (curSpot.getPiece().getLegalMoves().contains(clickedSpot)) {
+						int prevY = 0;
+						if (curSpot.isOccupied() && curSpot.getPiece() instanceof Pawn) {
+							prevY = curSpot.getY();
+						}
+						curSpot.getPiece().move(clickedSpot);
+
+						if (clickedSpot.getPiece().isWhite()) {
+							clearWPassant();
+						}
+						else {
+							clearBPassant();
+						}
+
+						lastMove1 = curSpot;
+						lastMove2 = clickedSpot;
+						whiteTurn = !whiteTurn;
+						if (clickedSpot.getPiece() instanceof Pawn) {
+							if (Math.abs(prevY - clickedSpot.getY()) == 2) {
+								System.out.println("hi");
+								try {
+									Spot leftSpot = board[clickedSpot.getX()-1][clickedSpot.getY()];
+
+									if (leftSpot.isOccupied() && leftSpot.getPiece() instanceof Pawn && leftSpot.getPiece().isWhite() != clickedSpot.getPiece().isWhite()) {
+										((Pawn) leftSpot.getPiece()).setCanPassantRight(true);
+										System.out.println("bro");
+									}
+
+									board[clickedSpot.getX()][clickedSpot.getPiece().isWhite() ? clickedSpot.getY()+1 : clickedSpot.getY()-1].setPassantSpot(true);
+								}
+								catch (Exception r) {
+
+								}
+
+								try {
+									Spot rightSpot = board[clickedSpot.getX()+1][clickedSpot.getY()];
+
+									if (rightSpot.isOccupied() && rightSpot.getPiece() instanceof Pawn && rightSpot.getPiece().isWhite() != clickedSpot.getPiece().isWhite()) {
+										((Pawn) rightSpot.getPiece()).setCanPassantLeft(true);
+									}
+
+									board[clickedSpot.getX()][clickedSpot.getPiece().isWhite() ? clickedSpot.getY()+1 : clickedSpot.getY()-1].setPassantSpot(true);
+								}
+								catch (Exception r) {
+
+								}
+							}
+						}
+					}
 				}
+
+			}
+			else {
+
+			}
+
+			if (clickedSpot.isOccupied()) {
+				System.out.println(clickedSpot.getPiece().getClass().getSimpleName());
+				if (clickedSpot.getPiece().isWhite() == whiteTurn) {
+					setPosMoves(clickedSpot);
+				}
+
+
 			}
 		}
 
+		curSpot.setCur(false);
+		curSpot = clickedSpot;
+		clickedSpot.setCur(true);
 		repaint();
+	}
+
+	private void setPosMoves(Spot s) {
+		if (s.isOccupied()) {
+			for (Spot d : s.getPiece().getLegalMoves()) {
+				d.setPossibleMove(true);
+			}
+		}
+	}
+
+	private void clearWPassant() {
+		for (Piece p : WPieces) {
+			if (p instanceof Pawn) {
+				((Pawn) p).setCanPassantLeft(false);
+				((Pawn) p).setCanPassantRight(false);
+			}
+		}
+
+		for (int i = 0; i < 8; i++) {
+			board[i][2].setPassantSpot(false);
+		}
+	}
+
+	private void clearBPassant() {
+		for (Piece p : BPieces) {
+			if (p instanceof Pawn) {
+				((Pawn) p).setCanPassantLeft(false);
+				((Pawn) p).setCanPassantRight(false);
+			}
+		}
+
+		for (int i = 0; i < 8; i++) {
+			board[i][5].setPassantSpot(false);
+		}
+	}
+
+	private void cleanPosMoves() {
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				board[i][j].setPossibleMove(false);
+			}
+		}
 	}
 
 	@Override
@@ -250,6 +350,10 @@ public class Board extends JPanel implements MouseListener {
 		Spot releasedSpot = (Spot) this.getComponentAt(curX, curY);
 
 		if (releasedSpot == curSpot) {
+			return;
+		}
+
+		if (curSpot == null) {
 			return;
 		}
 
@@ -272,5 +376,13 @@ public class Board extends JPanel implements MouseListener {
 	@Override
 	public void mouseExited(MouseEvent e) {
 
+	}
+
+	public Set<Piece> getWPieces() {
+		return WPieces;
+	}
+
+	public Set<Piece> getBPieces() {
+		return BPieces;
 	}
 }

@@ -27,6 +27,7 @@ public class King extends Piece {
 		if (Math.abs(dest.getX() - this.getPos().getX()) <= 1 && Math.abs(dest.getY() - this.getPos().getY()) <= 1) {
 			if (super.move(dest)) {
 				hasMoved = true;
+				System.out.println("hahiaowheaiow");
 				return true;
 			}
 			else {
@@ -34,10 +35,11 @@ public class King extends Piece {
 			}
 		}
 		//castling
-		else if (!hasMoved && this.getCover().contains(dest) && Math.abs(dest.getX() - this.getPos().getX()) == 2) {
+		else if (!hasMoved && this.getLegalMoves().contains(dest) && Math.abs(dest.getX() - this.getPos().getX()) == 2) {
+			System.out.println("castling");
 			if (dest.getX() > this.getPos().getX()) {
-				dest.setPiece(this);
 				this.getPos().removePiece();
+				dest.setPiece(this);
 				hasMoved = true;
 				((Rook) board.getBoard()[7][this.getPos().getY()].getPiece()).castle();
 			}
@@ -47,8 +49,7 @@ public class King extends Piece {
 				hasMoved = true;
 				((Rook) board.getBoard()[0][this.getPos().getY()].getPiece()).castle();
 			}
-			
-			this.getPos().removePiece();
+
 			this.setPos(dest);
 		}
 		
@@ -87,6 +88,7 @@ public class King extends Piece {
 			}
 			
 			else {
+
 				if (b.getBoard()[7][0].getPiece() instanceof Rook && !((Rook) b.getBoard()[7][0].getPiece()).getHasMoved()) {
 					if (!b.getBoard()[5][0].isOccupied() && 
 						b.getWCover().get(b.getBoard()[5][0]).isEmpty() &&
@@ -117,45 +119,125 @@ public class King extends Piece {
 		int x = s.getX();
 		int y = s.getY();
 
-		for (double i = 0; i < 2 * Math.PI; i += Math.PI/2) {
-			int checkedX = (int) (x + Math.cos(i));
-			int checkedY = (int) (y + Math.sin(i));
-
-			try {
-				if (this.isWhite()) {
-					if (b.getBCover().get(b.getBoard()[checkedX][checkedY]).isEmpty()) {
-						returned.add(b.getBoard()[checkedX][checkedY]);
-					}
-				}
-				else {
-					if (b.getWCover().get(b.getBoard()[checkedX][checkedY]).isEmpty()) {
-						returned.add(b.getBoard()[checkedX][checkedY]);
-					}
+		try {
+			if (this.isWhite()) {
+				if (b.getBCover().get(b.getBoard()[x+1][y]).isEmpty()) {
+					returned.add(b.getBoard()[x+1][y]);
 				}
 			}
-			catch (ArrayIndexOutOfBoundsException e) {
-				continue;
+			else {
+				if (b.getWCover().get(b.getBoard()[x+1][y]).isEmpty()) {
+					returned.add(b.getBoard()[x+1][y]);
+				}
 			}
 		}
-		for (double i = Math.PI/4; i < 2 * Math.PI; i += Math.PI/2) {
-			int checkedX = (int) (x + Math.cos(i)*2/Math.sqrt(2));
-			int checkedY = (int) (y + Math.sin(i)*2/Math.sqrt(2));
+		catch (ArrayIndexOutOfBoundsException e) {
 
-			try {
-				if (this.isWhite()) {
-					if (b.getBCover().get(b.getBoard()[checkedX][checkedY]).isEmpty()) {
-						returned.add(b.getBoard()[checkedX][checkedY]);
-					}
-				}
-				else {
-					if (b.getWCover().get(b.getBoard()[checkedX][checkedY]).isEmpty()) {
-						returned.add(b.getBoard()[checkedX][checkedY]);
-					}
+		}
+		try {
+			if (this.isWhite()) {
+				if (b.getBCover().get(b.getBoard()[x+1][y+1]).isEmpty()) {
+					returned.add(b.getBoard()[x-1][y+1]);
 				}
 			}
-			catch (ArrayIndexOutOfBoundsException e) {
-				continue;
+			else {
+				if (b.getWCover().get(b.getBoard()[x+1][y+1]).isEmpty()) {
+					returned.add(b.getBoard()[x+1][y+1]);
+				}
 			}
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+
+		}
+		try {
+			if (this.isWhite()) {
+				if (b.getBCover().get(b.getBoard()[x+1][y-1]).isEmpty()) {
+					returned.add(b.getBoard()[x+1][y-1]);
+				}
+			}
+			else {
+				if (b.getWCover().get(b.getBoard()[x+1][y-1]).isEmpty()) {
+					returned.add(b.getBoard()[x+1][y-1]);
+				}
+			}
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+
+		}
+		try {
+			if (this.isWhite()) {
+				if (b.getBCover().get(b.getBoard()[x][y+1]).isEmpty()) {
+					returned.add(b.getBoard()[x][y+1]);
+				}
+			}
+			else {
+				if (b.getWCover().get(b.getBoard()[x][y+1]).isEmpty()) {
+					returned.add(b.getBoard()[x][y+1]);
+				}
+			}
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+
+		}
+		try {
+			if (this.isWhite()) {
+				if (b.getBCover().get(b.getBoard()[x][y-1]).isEmpty()) {
+					returned.add(b.getBoard()[x][y-1]);
+				}
+			}
+			else {
+				if (b.getWCover().get(b.getBoard()[x][y-1]).isEmpty()) {
+					returned.add(b.getBoard()[x][y-1]);
+				}
+			}
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+
+		}
+		try {
+			if (this.isWhite()) {
+				if (b.getBCover().get(b.getBoard()[x-1][y+1]).isEmpty()) {
+					returned.add(b.getBoard()[x-1][y+1]);
+				}
+			}
+			else {
+				if (b.getWCover().get(b.getBoard()[x-1][y+1]).isEmpty()) {
+					returned.add(b.getBoard()[x-1][y+1]);
+				}
+			}
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+
+		}
+		try {
+			if (this.isWhite()) {
+				if (b.getBCover().get(b.getBoard()[x-1][y]).isEmpty()) {
+					returned.add(b.getBoard()[x-1][y]);
+				}
+			}
+			else {
+				if (b.getWCover().get(b.getBoard()[x-1][y]).isEmpty()) {
+					returned.add(b.getBoard()[x-1][y]);
+				}
+			}
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+
+		}
+		try {
+			if (this.isWhite()) {
+				if (b.getBCover().get(b.getBoard()[x-1][y-1]).isEmpty()) {
+					returned.add(b.getBoard()[x-1][y-1]);
+				}
+			}
+			else {
+				if (b.getWCover().get(b.getBoard()[x-1][y-1]).isEmpty()) {
+					returned.add(b.getBoard()[x-1][y-1]);
+				}
+			}
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+
 		}
 		
 		return returned;

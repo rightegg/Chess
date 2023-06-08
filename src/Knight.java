@@ -25,19 +25,53 @@ public class Knight extends Piece {
         int thisX = this.getPos().getX();
         int thisY = this.getPos().getY();
 
-        for (double i = 0; i < 2 * Math.PI; i+= Math.PI / 2) {
-            try {
-                returned.add(b[(int) (thisX + 2* Math.cos(i) + Math.sin(i))][(int)(thisY + 2*Math.sin(i) + Math.cos(i))]);
-            }
-            catch (ArrayIndexOutOfBoundsException ignored) {
+        try {
+            returned.add(b[thisX+2][thisY+1]);
+        }
+        catch (ArrayIndexOutOfBoundsException ignored) {
 
-            }
-            try {
-                returned.add(b[(int) (thisX + 2* Math.cos(i) - Math.sin(i))][(int)(thisY + 2*Math.sin(i) - Math.cos(i))]);
-            }
-            catch (ArrayIndexOutOfBoundsException ignored) {
+        }
+        try {
+            returned.add(b[thisX+2][thisY-1]);
+        }
+        catch (ArrayIndexOutOfBoundsException ignored) {
 
-            }
+        }
+        try {
+            returned.add(b[thisX-2][thisY+1]);
+        }
+        catch (ArrayIndexOutOfBoundsException ignored) {
+
+        }
+        try {
+            returned.add(b[thisX-2][thisY-1]);
+        }
+        catch (ArrayIndexOutOfBoundsException ignored) {
+
+        }
+        try {
+            returned.add(b[thisX+1][thisY+2]);
+        }
+        catch (ArrayIndexOutOfBoundsException ignored) {
+
+        }
+        try {
+            returned.add(b[thisX-1][thisY+2]);
+        }
+        catch (ArrayIndexOutOfBoundsException ignored) {
+
+        }
+        try {
+            returned.add(b[thisX+1][thisY-2]);
+        }
+        catch (ArrayIndexOutOfBoundsException ignored) {
+
+        }
+        try {
+            returned.add(b[thisX-1][thisY-2]);
+        }
+        catch (ArrayIndexOutOfBoundsException ignored) {
+
         }
 
         return returned;
