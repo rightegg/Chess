@@ -342,25 +342,6 @@ public class Board extends JPanel implements MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		curX = e.getY();
-		curY = e.getX();
-		Spot releasedSpot = (Spot) this.getComponentAt(curX, curY);
-
-		if (releasedSpot == curSpot) {
-			return;
-		}
-
-		if (curSpot == null) {
-			return;
-		}
-
-		if (curSpot.isOccupied()) {
-			if (curSpot.getPiece().isWhite() == whiteTurn) {
-				if (curSpot.getPiece().getLegalMoves().contains(releasedSpot)); {
-					curSpot.getPiece().move(releasedSpot);
-				}
-			}
-		}
 
 		repaint();
 	}
